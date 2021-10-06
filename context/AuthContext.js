@@ -1,11 +1,16 @@
-import { createContext, useState } from 'react';
+import { createContext, useEffect, useState } from 'react';
 import { API_URL } from '@/config/index';
+import { setCookie } from 'nookies'
+import { api } from 'services/api';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [error, setError] = useState(null);
+
+  useEffect(() => { })
+
 
   // Register user
 
@@ -16,7 +21,25 @@ export const AuthProvider = ({ children }) => {
   // Login user
 
   const login = async ({ email: identifier, password }) => {
-    console.log({ identifier, password })
+    try {
+      const response = await api.post('/auth/local', {
+        identifier,
+        password
+      })
+
+      const { user, jwt } = response.data;
+
+      setCookie(undefined, 'djevent.token', jwt, {
+        maxAge: 60 * 60 * 24 * 30, // 30 dias
+        path: "/"
+      })
+
+      setUser(user)
+
+    } catch (e) {
+      setError(e.message);
+      setError(null);
+    }
   }
 
   // Logout user
