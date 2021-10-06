@@ -1,9 +1,8 @@
 import { createContext, useEffect, useState } from 'react';
 import { API_URL } from '@/config/index';
-import { setCookie, parseCookies, destroyCookie } from 'nookies'
+import { setCookie, parseCookies, destroyCookie } from 'nookies';
 import { api } from 'services/api';
 import Router from 'next/router';
-import { FaAppStoreIos } from 'react-icons/fa';
 
 const AuthContext = createContext();
 
@@ -14,7 +13,6 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const { 'djevent.token': jwt } = parseCookies();
-
     if (jwt) {
       api.get('users/me', {
       }).then(response => {
@@ -22,7 +20,6 @@ export const AuthProvider = ({ children }) => {
         setUser({
           username, email, role
         })
-
       }).catch(() => {
         logout()
       })

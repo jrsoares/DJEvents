@@ -6,8 +6,10 @@ import Layout from "@/components/Layout";
 import styles from "@/styles/Form.module.css";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { api } from 'services/apiHTTP';
+import { parseCookies } from 'nookies'
 
-export default function AddEventPage() {
+export default function AddEventPage({ jwt }) {
   const [values, setValues] = useState({
     name: "",
     performers: "",
@@ -30,12 +32,18 @@ export default function AddEventPage() {
     if (hasEmptyFields) {
       toast.error("Please fill in all fields");
     }
+
     const res = await fetch(`${API_URL}/events`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${jwt}`, },
       body: JSON.stringify(values),
     });
+
     if (!res.ok) {
+      if (res.status === 403 || res.status === 401) {
+        toast.error('No token included')
+        return
+      }
       toast.error("Something Went Wrong");
     } else {
       const evt = await res.json();
@@ -130,4 +138,15 @@ export default function AddEventPage() {
       </form>
     </Layout>
   );
+}
+
+
+export async function getServerSideProps(ctx) {
+  const { 'djevent.token': jwt } = parseCookies(ctx);
+
+  return {
+    props: {
+      jwt
+    }
+  }
 }

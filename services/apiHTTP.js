@@ -10,4 +10,5 @@ export const api = axios.create({
 
 if (jwt) {
   api.defaults.headers['Authorization'] = `Bearer ${jwt}`
+  
 }
