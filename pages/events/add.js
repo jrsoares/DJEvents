@@ -6,7 +6,6 @@ import Layout from "@/components/Layout";
 import styles from "@/styles/Form.module.css";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { api } from 'services/apiHTTP';
 import { parseCookies } from 'nookies'
 
 export default function AddEventPage({ jwt }) {
